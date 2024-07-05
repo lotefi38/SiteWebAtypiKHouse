@@ -13,14 +13,26 @@ app.use(bodyParser.json());
 app.use(express.static('public'));
 
 
-   // Set the view engine to EJS
+   // definir le moteur de vue EJS
 app.set('view engine', 'ejs');
 
- 
+ // Importer les fichiers de routes
+const homeRoutes = require('./routes/home');
+const destinationsRoutes = require('./routes/destinations');
+const hebergementsRoutes = require('./routes/hebergements');
+const blogRoutes = require('./routes/blog');
+const hoteRoutes = require('./routes/hote');
+
+// Utiliser les fichiers de routes
+app.use('/', homeRoutes);
+app.use('/destinations', destinationsRoutes);
+app.use('/hebergements', hebergementsRoutes);
+app.use('/blog', blogRoutes);
+app.use('/hote', hoteRoutes)
 
 
 
-   // Define a simple route
+   // Definir la simple route
 app.get('/', (req, res) => {
 res.render('index'); // Render the index.ejs file
    });
