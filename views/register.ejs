@@ -8,7 +8,7 @@
 </head>
 <body>
   <%- include('partials/nav') %>
-  <div class="container mt-5">
+  <div class="container mt-4">
     <h1 class="text-center">Inscription</h1>
     <form action="/register" method="POST">
       <div class="form-group">
@@ -16,9 +16,13 @@
         <input type="text" class="form-control" id="username" name="username" required>
       </div>
       <div class="form-group">
-        <label for="email">Email</label>
-        <input type="email" class="form-control" id="email" name="email" required>
+        <label for="numbrphone">N°Telephone</label>
+        <input type="number" class="form-control" id="numbrphone" name="numbrphone" required>
       </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input type="email" class="form-control" id="email" name="email" required>
+    </div>
       <div class="form-group">
         <label for="password">Mot de passe</label>
         <input type="password" class="form-control" id="password" name="password" required>

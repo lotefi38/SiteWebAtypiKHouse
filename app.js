@@ -28,6 +28,8 @@ app.use(express.static('public'));
 
 // Définir le moteur de vue EJS
 app.set('view engine', 'ejs');
+app.set('views', './views');
+
 
 // Importer les fichiers de routes
 const homeRoutes = require('./routes/home');
@@ -35,6 +37,8 @@ const destinationsRoutes = require('./routes/destinations');
 const hebergementsRoutes = require('./routes/hebergements');
 const blogRoutes = require('./routes/blog');
 const hoteRoutes = require('./routes/hote');
+const authRoutes = require('./routes/auth'); // Importer les routes auth
+
 
 // Utiliser les fichiers de routes
 app.use('/', homeRoutes);
@@ -42,6 +46,18 @@ app.use('/destinations', destinationsRoutes);
 app.use('/hebergements', hebergementsRoutes);
 app.use('/blog', blogRoutes);
 app.use('/hote', hoteRoutes);
+app.use('/auth', authRoutes); // Utiliser les routes auth
+
+// Redirection de /login vers /auth/login
+app.get('/login', (req, res) => {
+    res.redirect('/login');
+});
+
+app.get('/register', (req, res) => {
+    res.redirect
+    ('/auth/register');
+});
+
 
 // Définir une route simple
 app.get('/', (req, res) => {
