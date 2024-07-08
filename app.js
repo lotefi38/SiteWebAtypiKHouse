@@ -3,6 +3,7 @@ const app = express();
 require('dotenv').config();
 const db = require('./db'); // Import the db connection
 const bodyParser = require('body-parser');
+const db = require('./models');
 
 // Middleware
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -32,6 +33,13 @@ app.use('/hote', hoteRoutes);
 app.get('/', (req, res) => {
     res.render('index'); // Render the index.ejs file
 });
+
+  // Synchroniser les modèles avec la base de données
+  db.sequelize.sync().then(() => {
+    console.log('Database synchronized');
+  }).catch(err => {
+    console.error('Error synchronizing database:', err);
+  });
 
 // Démarrer le serveur
 const port = 3000; // Changez le port ici
