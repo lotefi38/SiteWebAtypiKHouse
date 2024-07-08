@@ -6,3 +6,4 @@ router.get('/', (req, res) => {
   res.render('destinations');
 });
 
+module.exports = router;
