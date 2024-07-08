@@ -1,13 +1,28 @@
 const express = require('express');
-const app = express();
 require('dotenv').config();
 const db = require('./db'); // Import the db connection
 const bodyParser = require('body-parser');
 const db = require('./models');
+const session = require('express-session');
+const passport = require('passport');
 
-// Middleware
+const app = express();
+initializePassport(passport);
+
+
+// Middleware pour parser les requêtes URL-Encoded et JSON
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+// Middleware pour les sessions
+app.use(session({
+    secret: process.env.SESSION_SECRET || 'defaultsecret',
+    resave: false,
+    saveUninitialized: false
+  }));
+  app.use(passport.initialize());
+  app.use(passport.session());
+  
 
 // Servir les fichiers statiques
 app.use(express.static('public'));
