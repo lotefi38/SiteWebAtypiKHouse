@@ -1,11 +1,10 @@
 const express = require('express');
 require('dotenv').config();
-const db = require('./db'); // Import the db connection
 const bodyParser = require('body-parser');
 const db = require('./models');
 const session = require('express-session');
 const passport = require('passport');
-
+const initializePassport = require('./config/passport')
 const app = express();
 initializePassport(passport);
 
