@@ -10,6 +10,24 @@
   <%- include('partials/nav') %>
   <div class="container mt-5">
     <h1 class="text-center">Nos Hébergements</h1>
+    <div class="d-flex justify-content-center align-items-center" style="margin-bottom: 20px">
+      <a href="/hebergements/add" class="btn btn-primary">Ajouter un Hébergement</a>
+  </div>
+    <div class="row">
+      <% housings.forEach(housing => { %>
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-body">
+              <h5 class="card-title"><%= housing.title %></h5>
+              <p class="card-text"><%= housing.description %></p>
+              <p class="card-text">Type: <%= housing.type %></p>
+              <p class="card-text">Prix: <%= housing.price %> €</p>
+              <p class="card-text">Capacité: <%= housing.capacity %> personnes</p>
+            </div>
+          </div>
+        </div>
+      <% }); %>
+    </div>
   </div>
   <%- include('partials/footer') %>
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -17,6 +35,8 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
+
 
 
 
