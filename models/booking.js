@@ -8,12 +8,22 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.DATE,
         allowNull: false,
       },
-      status: {
-        type: DataTypes.STRING,
+      guests: {
+        type: DataTypes.INTEGER,
         allowNull: false,
-        defaultValue: 'pending',
       },
     });
+  
+    Booking.associate = function(models) {
+      Booking.belongsTo(models.Housing, {
+        foreignKey: 'housingId',
+        onDelete: 'CASCADE',
+      });
+      Booking.belongsTo(models.User, {
+        foreignKey: 'userId',
+        onDelete: 'CASCADE',
+      });
+    };  
 
     return Booking;
   };

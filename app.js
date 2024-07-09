@@ -13,6 +13,10 @@ initializePassport(passport);
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+// Servir les fichiers statiques depuis le répertoire 'uploads'
+app.use('/uploads', express.static('uploads'));
+
+
 // Middleware pour les sessions
 app.use(session({
     secret: process.env.SESSION_SECRET || 'defaultsecret',
@@ -38,7 +42,7 @@ const hebergementsRoutes = require('./routes/hebergements');
 const blogRoutes = require('./routes/blog');
 const hoteRoutes = require('./routes/hote');
 const authRoutes = require('./routes/auth'); // Importer les routes auth
-
+const bookingRoutes = require('./routes/booking');
 
 // Utiliser les fichiers de routes
 app.use('/', homeRoutes);
@@ -47,6 +51,7 @@ app.use('/hebergements', hebergementsRoutes);
 app.use('/blog', blogRoutes);
 app.use('/hote', hoteRoutes);
 app.use('/auth', authRoutes); // Utiliser les routes auth
+app.use('/booking', bookingRoutes);
 
 // Redirection de /login vers /auth/login
 app.get('/login', (req, res) => {
@@ -56,6 +61,11 @@ app.get('/login', (req, res) => {
 app.get('/register', (req, res) => {
     res.redirect
     ('/auth/register');
+});
+
+// Redirection des requêtes POST pour /register vers /auth/register
+app.post('/register', (req, res) => {
+  res.redirect(307, '/auth/register'); // Utiliser un code de statut 307 pour préserver la méthode POST
 });
 
 
