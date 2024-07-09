@@ -55,7 +55,7 @@ app.use('/booking', bookingRoutes);
 
 // Redirection de /login vers /auth/login
 app.get('/login', (req, res) => {
-    res.redirect('/login');
+    res.redirect('/auth/login');
 });
 
 app.get('/register', (req, res) => {

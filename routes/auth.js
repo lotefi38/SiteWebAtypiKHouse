@@ -13,28 +13,14 @@ router.get('/register', (req, res) => {
 router.post('/register', async (req, res) => {
   const { username, email, password } = req.body;
   try {
-    // Vérifier si l'utilisateur existe déjà
-    const existingUser = await db.User.findOne({ where: { username: username } });
-    const existingEmail = await db.User.findOne({ where: { email: email } });
-    
-    if (existingUser) {
-      return res.status(400).send('Ce nom d\'utilisateur est déjà pris.');
-    }
-    
-    if (existingEmail) {
-      return res.status(400).send('Cet email est déjà utilisé.');
-    }
-
-    // Hash du mot de passe et création de l'utilisateur
     const hashedPassword = await bcrypt.hash(password, 10);
     await db.User.create({ username, email, password: hashedPassword });
-    res.redirect('/auth/login');
+    res.redirect('/login');
   } catch (e) {
     console.log(e);
-    res.redirect('/auth/register');
+    res.redirect('/register');
   }
 });
-
 
 // Route pour afficher le formulaire de connexion
 router.get('/login', (req, res) => {
@@ -67,8 +53,7 @@ router.post('/login', (req, res, next) => {
 // Route pour gérer la déconnexion
 router.get('/logout', (req, res) => {
   req.logout();
-  res.redirect('/auth/login');
+  res.redirect('/login');
 });
 
 module.exports = router;
-
