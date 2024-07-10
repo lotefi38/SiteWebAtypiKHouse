@@ -1,0 +1,78 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= housing.title %></title>
+  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+  <%- include('partials/nav') %>
+  <div class="container mt-5">
+    <h1 class="text-center"><%= housing.title %></h1>
+    <div class="row">
+      <div class="col-md-8">
+        <div id="carouselExampleIndicators" class="carousel slide" data-ride="carousel">
+          <div class="carousel-inner">
+            <% if (housing.image) { %>
+              <div class="carousel-item active">
+                <img src="/<%= housing.image %>" class="d-block w-100" alt="<%= housing.title %>">
+              </div>
+            <% } else { %>
+              <div class="carousel-item active">
+                <img src="/path/to/default-image.jpg" class="d-block w-100" alt="Default Image">
+              </div>
+            <% } %>
+          </div>
+          <a class="carousel-control-prev" href="#carouselExampleIndicators" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="carousel-control-next" href="#carouselExampleIndicators" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+        <p class="mt-4"><%= housing.description %></p>
+      </div>
+      <div class="col-md-4">
+        <h3>Prix: <%= housing.price %> €</h3>
+        <h4>Capacité: <%= housing.capacity %>personnes</h4>
+        <form action="/bookings/add" method="POST">
+          <input type="hidden" name="housingId" value="<%= housing.id %>">
+          <div class="form-group">
+            <label for="startDate">Date d'arrivée</label>
+            <input type="date" class="form-control" id="startDate" name="startDate" required>
+          </div>
+          <div class="form-group">
+            <label for="endDate">Date de départ</label>
+            <input type="date" class="form-control" id="endDate" name="endDate" required>
+          </div>
+          <div class="form-group">
+            <label for="guests">Nombre de personnes</label>
+            <input type="number" class="form-control" id="guests" name="guests" min="1" max="<%= housing.capacity %>" required>
+          </div>
+          <button type="submit" class="btn btn-primary">Réservez maintenant</button>
+        </form>
+      </div>
+    </div>
+    <hr>
+    <h3>Informations complémentaires</h3>
+    <ul>
+      <!-- Display additional information here -->
+    </ul>
+    <h3>Commentaires</h3>
+    <ul>
+      <% housing.Comments.forEach(comment => { %>
+        <li><strong><%= comment.username %>:</strong> <%= comment.text %></li>
+      <% }) %>
+    </ul>
+  </div>
+  <%- include('partials/footer') %>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
+

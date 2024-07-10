@@ -10,23 +10,23 @@
   <%- include('partials/nav') %>
   <div class="container mt-5">
     <h1 class="text-center">Nos Hébergements</h1>
-    <div class="d-flex justify-content-center align-items-center" style="margin-bottom: 20px">
-      <a href="/hebergements/add" class="btn btn-primary">Ajouter un Hébergement</a>
-  </div>
     <div class="row">
       <% housings.forEach(housing => { %>
         <div class="col-md-4">
           <div class="card mb-4">
+            <% if (housing.image) { %>
+              <img src="/<%= housing.image %>" class="card-img-top" alt="<%= housing.title %>">
+            <% } else { %>
+              <img src="/path/to/default-image.jpg" class="card-img-top" alt="Default Image">
+            <% } %>
             <div class="card-body">
               <h5 class="card-title"><%= housing.title %></h5>
-              <p class="card-text"><%= housing.description %></p>
-              <p class="card-text">Type: <%= housing.type %></p>
-              <p class="card-text">Prix: <%= housing.price %> €</p>
-              <p class="card-text">Capacité: <%= housing.capacity %> personnes</p>
+              <p class="card-text"><%= housing.description.substring(0, 100) %>...</p>
+              <a href="/hebergements/<%= housing.id %>" class="btn btn-primary">Voir plus</a>
             </div>
           </div>
         </div>
-      <% }); %>
+      <% }) %>
     </div>
   </div>
   <%- include('partials/footer') %>
@@ -35,9 +35,4 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
-
-
-
-
-
 

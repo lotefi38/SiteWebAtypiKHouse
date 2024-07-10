@@ -8,6 +8,21 @@ const initializePassport = require('./config/passport')
 const app = express();
 initializePassport(passport);
 
+const path = require('path');
+
+// Configuration de multer pour le stockage des fichiers
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({ storage: storage });
+
+
 
 // Middleware pour parser les requêtes URL-Encoded et JSON
 app.use(bodyParser.urlencoded({ extended: true }));
