@@ -1,26 +1,26 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Destinations</title>
+  <title>Hébergements par Thème</title>
   <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
   <%- include('partials/nav') %>
   <div class="container mt-5">
-    <h1 class="text-center">Destinations</h1>
+    <h1 class="text-center">Hébergements pour le thème</h1>
     <div class="row">
-      <% destinations.forEach(destination => { %>
+      <% housings.forEach(housing => { %>
         <div class="col-md-4">
           <div class="card mb-4">
-            <img src="<%= destination.image %>" class="card-img-top" alt="<%= destination.name %>">
+            <img src="<%= housing.image %>" class="card-img-top" alt="<%= housing.title %>">
             <div class="card-body">
-              <h5 class="card-title"><%= destination.name %></h5>
-              <p class="card-text"><%= destination.description %></p>
-              <p class="card-text"><strong>Lieu :</strong> <%= destination.location %></p>
-              <p class="card-text"><strong>Catégories :</strong> <%= destination.categories %></p>
+              <h5 class="card-title"><%= housing.title %></h5>
+              <p class="card-text"><%= housing.description %></p>
+              <p class="card-text">Type: <%= housing.type %></p>
+              <p class="card-text">Prix: <%= housing.price %> €</p>
+              <p class="card-text">Capacité: <%= housing.capacity %> personnes</p>
             </div>
           </div>
         </div>
@@ -33,3 +33,5 @@
   <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
+
+

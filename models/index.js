@@ -13,7 +13,10 @@ const Sequelize = require('sequelize');
    db.Comment = require('./comment')(sequelize, Sequelize);
    db.Equipment = require('./equipment')(sequelize, Sequelize);
    db.Notification = require('./notification')(sequelize, Sequelize);
+   db.Theme = require('./theme')(sequelize, Sequelize); // Ajout du modèle Theme
+   db.Destination = require('./destinations')(sequelize, Sequelize); // Importez le modèle Destination
 
+  
    // Associations
    db.Owner.hasMany(db.Housing);
    db.Housing.belongsTo(db.Owner);
@@ -32,6 +35,9 @@ const Sequelize = require('sequelize');
 
    db.Housing.belongsToMany(db.Equipment, { through: 'HousingEquipments' });
    db.Equipment.belongsToMany(db.Housing, { through: 'HousingEquipments' });
+
+   db.Housing.belongsTo(db.Theme, { foreignKey: 'themeId', as: 'theme' });
+   db.Theme.hasMany(db.Housing, { foreignKey: 'themeId', as: 'housings' });
 
    db.User.hasMany(db.Notification);
    db.Notification.belongsTo(db.User);

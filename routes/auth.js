@@ -3,7 +3,7 @@ const router = express.Router();
 const passport = require('passport');
 const bcrypt = require('bcrypt');
 const db = require('../models');
-
+const auth = require('./auth');
 // Route pour afficher le formulaire d'inscription
 router.get('/register', (req, res) => {
   res.render('register');

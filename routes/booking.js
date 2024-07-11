@@ -3,20 +3,44 @@ const router = express.Router();
 const db = require('../models');
 const { ensureAuthenticated } = require('../config/auth');
 
-// Route pour ajouter une réservation
-router.post('/add', ensureAuthenticated, async (req, res) => {
+// Route pour afficher les réservations de l'utilisateur
+router.get('/', ensureAuthenticated, async (req, res) => {
   try {
-    const { housingId, startDate, endDate, guests } = req.body;
+    const bookings = await db.Booking.findAll({
+      where: { UserId: req.user.id },
+      include: [{ model: db.Housing }]
+    });
+    res.render('bookings', { bookings });
+  } catch (err) {
+    console.error('Error fetching bookings:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Route pour afficher le formulaire d'ajout de réservation
+router.get('/add', ensureAuthenticated, async (req, res) => {
+  try {
+    const housings = await db.Housing.findAll();
+    res.render('add-booking', { housings });
+  } catch (err) {
+    console.error('Error fetching housings:', err);
+    res.status(500).send('Server Error');
+  }
+});
+
+// Route pour gérer l'ajout de réservation
+router.post('/add', ensureAuthenticated, async (req, res) => {
+  const { startDate, endDate, housingId } = req.body;
+  try {
     await db.Booking.create({
-      housingId,
-      userId: req.user.id,
       startDate,
       endDate,
-      guests,
+      HousingId: housingId,
+      UserId: req.user.id
     });
-    res.redirect('/hebergements/' + housingId);
-  } catch (error) {
-    console.error('Error creating booking:', error);
+    res.redirect('/bookings');
+  } catch (err) {
+    console.error('Error adding booking:', err);
     res.status(500).send('Server Error');
   }
 });

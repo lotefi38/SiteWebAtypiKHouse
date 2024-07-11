@@ -27,6 +27,12 @@ router.post('/add', ensureAuthenticated, upload.single('image'), async (req, res
   try {
     const { title, description, type, price, capacity } = req.body;
     const image = req.file ? req.file.path : null;
+    const owner =await db.owner.findOne({ where: { id: req.user.id } });
+if (!owner) {
+  const newOwner = await db.Owner.create({
+    name: req.user.username,ocntact: req.user.email, 
+    UserId: req.user.id
+  });
     await db.Housing.create({
       title,
       description,
@@ -34,8 +40,21 @@ router.post('/add', ensureAuthenticated, upload.single('image'), async (req, res
       price,
       capacity,
       image,
-      OwnerId: req.user.id,
+      themeId,
+      ownerId:newOwner.id,
     });
+  }else{
+    await db.Housing.create({
+      title,
+      description,
+      type,
+      price,
+      capacity,
+      image,
+      themeId,
+      ownerId:owner.id,
+    });
+  }
     res.redirect('/hebergements');
   } catch (error) {
     console.error('Error adding housing:', error);

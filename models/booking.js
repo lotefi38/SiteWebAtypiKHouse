@@ -10,18 +10,18 @@ module.exports = (sequelize, DataTypes) => {
       },
       guests: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+       defaultValue: 0
       },
-    });
+    }, {});
   
     Booking.associate = function(models) {
       Booking.belongsTo(models.Housing, {
         foreignKey: 'housingId',
-        onDelete: 'CASCADE',
+        onDelete: 'SET NULL', onUpdate: 'CASCADE',
       });
       Booking.belongsTo(models.User, {
         foreignKey: 'userId',
-        onDelete: 'CASCADE',
+        onDelete:'SET NULL', onUpdate: 'CASCADE',
       });
     };  
 
