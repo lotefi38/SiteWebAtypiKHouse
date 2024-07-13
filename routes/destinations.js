@@ -3,7 +3,7 @@ const router = express.Router();
 const db = require('../models');
 const multer = require('multer');
 const path = require('path');
-const { ensureAuthenticated } = require('../config/auth');
+const { ensureAuthenticated } = require('../middleware/auth');
 
 // Configuration de multer pour le stockage des fichiers
 const storage = multer.diskStorage({

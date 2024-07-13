@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models');
-const { ensureAuthenticated } = require('../config/auth');
 const multer = require('multer');
 const path = require('path');
+const { ensureAuthenticated } = require('../config/auth');
 
 // Configuration de multer pour le stockage des fichiers
 const storage = multer.diskStorage({
@@ -18,43 +18,43 @@ const storage = multer.diskStorage({
 const upload = multer({ storage: storage });
 
 // Route pour afficher le formulaire de création d'un hébergement
-router.get('/add', ensureAuthenticated, (req, res) => {
-  res.render('add-hebergement');
+router.get('/add', ensureAuthenticated, async (req, res) => {
+  const themes = await db.Theme.findAll();
+  res.render('add-hebergement', { themes });
 });
 
 // Route pour ajouter un nouvel hébergement
 router.post('/add', ensureAuthenticated, upload.single('image'), async (req, res) => {
   try {
-    const { title, description, type, price, capacity } = req.body;
+    const { title, description, type, price, capacity, themeId } = req.body;
     const image = req.file ? req.file.path : null;
-    const owner =await db.owner.findOne({ where: { id: req.user.id } });
-if (!owner) {
-  const newOwner = await db.Owner.create({
-    name: req.user.username,ocntact: req.user.email, 
-    UserId: req.user.id
-  });
-    await db.Housing.create({
-      title,
-      description,
-      type,
-      price,
-      capacity,
-      image,
-      themeId,
-      ownerId:newOwner.id,
-    });
-  }else{
-    await db.Housing.create({
-      title,
-      description,
-      type,
-      price,
-      capacity,
-      image,
-      themeId,
-      ownerId:owner.id,
-    });
-  }
+    const owner = await db.Owner.findOne({ where: { UserId: req.user.id } });
+
+    if (!owner) {
+      const newOwner = await db.Owner.create({ name: req.user.username, contact: req.user.email, UserId: req.user.id });
+      await db.Housing.create({
+        title,
+        description,
+        type,
+        price,
+        capacity,
+        image,
+        themeId,
+        OwnerId: newOwner.id,
+      });
+    } else {
+      await db.Housing.create({
+        title,
+        description,
+        type,
+        price,
+        capacity,
+        image,
+        themeId,
+        OwnerId: owner.id,
+      });
+    }
+    
     res.redirect('/hebergements');
   } catch (error) {
     console.error('Error adding housing:', error);
@@ -79,8 +79,14 @@ router.get('/:id', async (req, res) => {
     const housing = await db.Housing.findByPk(req.params.id, {
       include: [{ model: db.Comment }],
     });
+
     if (housing) {
-      res.render('single-hebergement', { housing });
+      // Calcul de la note moyenne
+      const comments = housing.Comments;
+      const totalRatings = comments.reduce((acc, comment) => acc + comment.rating, 0);
+      const averageRating = comments.length > 0 ? totalRatings / comments.length : 0;
+
+      res.render('single-hebergement', { housing, averageRating });
     } else {
       res.status(404).send('Housing not found');
     }

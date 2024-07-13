@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const db = require('../models');
-const { ensureAuthenticated } = require('../config/auth');
+const { ensureAuthenticated } = require('../middleware/auth');
 
 // Route pour afficher les réservations de l'utilisateur
 router.get('/', ensureAuthenticated, async (req, res) => {

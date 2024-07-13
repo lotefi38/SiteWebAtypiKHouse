@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const { Comment, Housing, Booking, User } = require('../models');
 const upload = require('../config/multer');
-const { ensureAuthenticated } = require('../config/auth');
+const { ensureAuthenticated } = require('../middleware/auth');
 
 // Afficher les commentaires pour un hébergement
 router.get('/:housingId/comments', async (req, res) => {

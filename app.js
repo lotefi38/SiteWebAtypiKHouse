@@ -6,7 +6,7 @@ const passport = require('passport');
 require('dotenv').config();
 const db = require('./models');
 const initializePassport = require('./config/passport');
-
+const path = require('path');
 const app = express();
 initializePassport(passport);
 
@@ -28,7 +28,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Servir les fichiers statiques depuis le répertoire 'public'
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // Servir les fichiers statiques depuis le répertoire 'uploads'
 app.use('/uploads', express.static('uploads'));
@@ -37,6 +37,7 @@ app.use('/uploads', express.static('uploads'));
 
 // Définir le moteur de vue sur EJS
 app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
 // Importer les fichiers de routes
 const homeRoutes = require('./routes/home');

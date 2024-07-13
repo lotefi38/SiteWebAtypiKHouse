@@ -1,20 +1,18 @@
+// routes/auth.js
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const { User } = require('../models');
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' });
-
+const upload = require('../config/multer');
 
 // Route de login
-router.get('/auth/login', (req, res) => {
+router.get('/login', (req, res) => {
   res.render('login', { error: req.flash('error') });
 });
 
-
-router.post('/auth/login', passport.authenticate('local', {
-  failureRedirect: '/auth/login',
+router.post('/login', passport.authenticate('local', {
+  failureRedirect: '/login',
   failureFlash: true
 }), (req, res) => {
   if (req.session.returnTo) {
@@ -34,12 +32,6 @@ router.get('/register', (req, res) => {
 router.post('/register', upload.single('photo'), async (req, res) => {
   const { username, email, password, firstName, lastName, phone, address } = req.body;
   try {
-    // Vérification préalable
-    const existingUser = await User.findOne({ where: { email } });
-    if (existingUser) {
-      return res.render('register', { error: 'Email already registered. Please use another one.' });
-    }
-    
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({
       username,
@@ -51,29 +43,23 @@ router.post('/register', upload.single('photo'), async (req, res) => {
       address,
       photo: req.file ? req.file.path : null
     });
-    res.redirect('/auth/login');
+    req.flash('success', 'Registration successful! Please log in.');
+    res.redirect('/login');
   } catch (error) {
-    if (error.name === 'SequelizeUniqueConstraintError') {
-      if (error.errors[0].path === 'username') {
-        return res.render('register', { error: 'Username already taken. Please choose another one.' });
-      }
-      if (error.errors[0].path === 'email') {
-        return res.render('register', { error: 'Email already registered. Please use another one.' });
-      }
-    }
     console.error('Error registering user:', error);
     res.render('register', { error: 'An error occurred during registration. Please try again.' });
   }
 });
 
+// Route de profile
 router.get('/profile', async (req, res) => {
   if (!req.isAuthenticated()) {
     req.session.returnTo = req.originalUrl;  // Sauvegarder l'URL de la page d'origine
-    return res.redirect(' /auth/login');
+    return res.redirect('/login');
   }
   try {
     const user = await User.findByPk(req.user.id);
-    res.render('profile', { user, error: null, success: null });
+    res.render('profile', { user, error: req.flash('error'), success: req.flash('success') });
   } catch (error) {
     console.error('Error fetching profile:', error);
     res.render('profile', { user: null, error: 'An error occurred while fetching your profile. Please try again.', success: null });
@@ -85,7 +71,8 @@ router.post('/profile', upload.single('photo'), async (req, res) => {
     const { firstName, lastName, email, phone, address, password, confirmPassword } = req.body;
 
     if (password && password !== confirmPassword) {
-      return res.render('profile', { user: req.user, error: 'Passwords do not match.', success: null });
+      req.flash('error', 'Passwords do not match.');
+      return res.redirect('/profile');
     }
 
     const user = await User.findByPk(req.user.id);
@@ -105,10 +92,12 @@ router.post('/profile', upload.single('photo'), async (req, res) => {
     }
 
     await user.save();
-    res.render('profile', { user, error: null, success: 'Profile updated successfully.' });
+    req.flash('success', 'Profile updated successfully.');
+    res.redirect('/profile');
   } catch (error) {
     console.error('Error updating profile:', error);
-    res.render('profile', { user: req.user, error: 'An error occurred while updating your profile. Please try again.', success: null });
+    req.flash('error', 'An error occurred while updating your profile. Please try again.');
+    res.redirect('/profile');
   }
 });
 
@@ -116,20 +105,23 @@ router.post('/profile/delete', async (req, res) => {
   try {
     const user = await User.findByPk(req.user.id);
     await user.destroy();
-    req.logout();
-    res.redirect('/');
+    req.logout(() => {
+      req.flash('success', 'Your account has been deleted.');
+      res.redirect('/');
+    });
   } catch (error) {
     console.error('Error deleting profile:', error);
-    res.render('profile', { user: req.user, error: 'An error occurred while deleting your profile. Please try again.', success: null });
+    req.flash('error', 'An error occurred while deleting your profile. Please try again.');
+    res.redirect('/profile');
   }
 });
 
 // Route de déconnexion
 router.get('/logout', (req, res) => {
-  req.logout();
-  res.redirect('/');
+  req.logout(() => {
+    req.flash('success', 'You are logged out');
+    res.redirect('/');
+  });
 });
 
-
 module.exports = router;
-
